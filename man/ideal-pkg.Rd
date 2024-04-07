@@ -2,6 +2,7 @@
 % Please edit documentation in R/ideal-pkg.R
 \docType{package}
 \name{ideal-pkg}
+\alias{ideal-package}
 \alias{ideal-pkg}
 \title{ideal: Interactive Differential Expression Analysis}
 \description{
@@ -17,6 +18,15 @@ The analysis of RNA-seq datasets is guided by the Shiny app as main component of
 the package, which also provides a wide set of functions to efficiently extract
 information from the existing data. The app can be also deployed on a Shiny
 server, to allow its usage without any installation on the user's side.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/federicomarini/ideal}
+  \item \url{https://federicomarini.github.io/ideal/}
+  \item Report bugs at \url{https://github.com/federicomarini/ideal/issues}
+}
+
 }
 \author{
 Federico Marini \email{marinif@uni-mainz.de}, 2016-2017

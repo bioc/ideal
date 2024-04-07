@@ -57,7 +57,7 @@
 #' Maintainer: Federico Marini \email{marinif@@uni-mainz.de}
 #' @name ideal-pkg
 #' @docType package
-NULL
+"_PACKAGE"
 
 .onAttach <- function(libname, pkgname) {
   pkgVersion <- packageDescription("ideal", fields = "Version")
