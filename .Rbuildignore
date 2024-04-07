@@ -10,3 +10,4 @@ docs/*
 ^\.github/workflows/R-CMD-check\.yaml$
 ^\.github/workflows/pr-commands\.yaml$
 ^CODE_OF_CONDUCT\.md$
+^LICENSE\.md$
