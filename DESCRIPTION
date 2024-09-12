@@ -10,7 +10,9 @@ Description: This package provides functions for an Interactive
     Differential Expression AnaLysis of RNA-sequencing datasets, to
     extract quickly and effectively information downstream the step
     of differential expression. A Shiny application encapsulates
-    the whole package.
+    the whole package. Support for reproducibility of the whole analysis is 
+    provided by means of a template report which gets automatically compiled 
+    and can be stored/shared.
 License: MIT + file LICENSE
 Depends: topGO
 Imports: 
