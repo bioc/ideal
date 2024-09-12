@@ -64,7 +64,7 @@ dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
 dds_airway <- DESeq2::DESeq(dds_airway)
 res_airway <- DESeq2::results(dds_airway)
 
-res_subset <- deseqresult2DEgenes(res_airway)[1:100, ]
+res_subset <- mosdef::deresult_to_df(res_airway)[1:100, ]
 myde <- res_subset$id
 myassayed <- rownames(res_airway)
 \dontrun{
