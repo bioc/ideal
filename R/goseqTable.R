@@ -23,7 +23,10 @@
 #' to each GO term
 #'
 #' @return A table containing the computed GO Terms and related enrichment scores
+#' 
 #' @export
+#' 
+#' @importFrom mosdef run_goseq
 #'
 #' @examples
 #'
@@ -37,7 +40,7 @@
 #' dds_airway <- DESeq2::DESeq(dds_airway)
 #' res_airway <- DESeq2::results(dds_airway)
 #'
-#' res_subset <- deseqresult2DEgenes(res_airway)[1:100, ]
+#' res_subset <- mosdef::deresult_to_df(res_airway)[1:100, ]
 #' myde <- res_subset$id
 #' myassayed <- rownames(res_airway)
 #' \dontrun{
@@ -68,47 +71,65 @@ goseqTable <- function(de.genes, # Differentially expressed genes
                        ## do it by default only for bp?
                        ## tests at the beginning to see if the whole thing is feasible?
 ) {
-  #  library(goseq)
-  #  library(GO.db)
-  gene.vector <- as.integer(assayed.genes %in% de.genes)
-  names(gene.vector) <- assayed.genes
-  fdr <- FDR_GO_cutoff
-
-  pwf <- nullp(DEgenes = gene.vector, genome = genome, id = id, plot.fit = FALSE)
-
-  goseq_out <- goseq(pwf, genome = genome, id = id, test.cats = testCats)
-
-
-
-  goseq_out$p.adj <- p.adjust(goseq_out$over_represented_pvalue, method = "BH")
-
-  # to reduce the load for adding the genes
-  goseq_out <- goseq_out[seq_len(nTop), ]
-
-  if (addGeneToTerms) {
-    # for adding the gene ids/names...
-    gene2cat <- getgo(de.genes, genome = genome, id = id, fetch.cats = testCats)
-    names(gene2cat) <- de.genes
-
-    reversemap <- function(map) # as in goseq
-    {
-      tmp <- unlist(map, use.names = FALSE)
-      names(tmp) <- rep(names(map), times = as.numeric(summary(map)[, 1]))
-      return(split(names(tmp), as.vector(tmp)))
-    }
-
-    cat2gene <- reversemap(gene2cat)
-    # one list per GO term
-    goseq_out$genes <- sapply(goseq_out$category, function(x) cat2gene[[x]])
-
-    # TODO: replace identifiers/annotaions!!!
-    ## and also TODO: do this only if genes are not already symbols
-    goseq_out$genesymbols <- sapply(goseq_out$genes, function(x) sort(AnnotationDbi::mapIds(get(orgDbPkg), keys = x, keytype = "ENSEMBL", column = "SYMBOL", multiVals = "first")))
-    # coerce to char
-    goseq_out$genes <- unlist(lapply(goseq_out$genes, function(arg) paste(arg, collapse = ",")))
-    # coerce to char
-    goseq_out$genesymbols <- unlist(lapply(goseq_out$genesymbols, function(arg) paste(arg, collapse = ",")))
-  }
-
-  return(goseq_out)
+  
+  .Deprecated(old = "goseqTable", new = "mosdef::run_goseq", 
+              msg = paste0(
+                "Please use `mosdef::run_goseq()` in replacement of the `goseqTable()` function, ",
+                "originally located in the ideal package. \nCheck the manual page for ",
+                "`?mosdef::run_goseq()` to see the details on how to use it, e.g. ",
+                "refer to the new parameter definition and naming"))
+  
+  res_enrich <- mosdef::run_goseq(
+    de_genes = de.genes, 
+    bg_genes = assayed.genes,
+    genome = genome,
+    id = id, 
+    testCats = testCats, 
+    mapping = orgDbPkg, 
+    add_gene_to_terms = addGeneToTerms
+  )
+    
+  return(res_enrich)
+  
+  # gene.vector <- as.integer(assayed.genes %in% de.genes)
+  # names(gene.vector) <- assayed.genes
+  # fdr <- FDR_GO_cutoff
+  # 
+  # pwf <- nullp(DEgenes = gene.vector, genome = genome, id = id, plot.fit = FALSE)
+  # 
+  # goseq_out <- goseq(pwf, genome = genome, id = id, test.cats = testCats)
+  # 
+  # 
+  # 
+  # goseq_out$p.adj <- p.adjust(goseq_out$over_represented_pvalue, method = "BH")
+  # 
+  # # to reduce the load for adding the genes
+  # goseq_out <- goseq_out[seq_len(nTop), ]
+  # 
+  # if (addGeneToTerms) {
+  #   # for adding the gene ids/names...
+  #   gene2cat <- getgo(de.genes, genome = genome, id = id, fetch.cats = testCats)
+  #   names(gene2cat) <- de.genes
+  # 
+  #   reversemap <- function(map) # as in goseq
+  #   {
+  #     tmp <- unlist(map, use.names = FALSE)
+  #     names(tmp) <- rep(names(map), times = as.numeric(summary(map)[, 1]))
+  #     return(split(names(tmp), as.vector(tmp)))
+  #   }
+  # 
+  #   cat2gene <- reversemap(gene2cat)
+  #   # one list per GO term
+  #   goseq_out$genes <- sapply(goseq_out$category, function(x) cat2gene[[x]])
+  # 
+  #   # TODO: replace identifiers/annotaions!!!
+  #   ## and also TODO: do this only if genes are not already symbols
+  #   goseq_out$genesymbols <- sapply(goseq_out$genes, function(x) sort(AnnotationDbi::mapIds(get(orgDbPkg), keys = x, keytype = "ENSEMBL", column = "SYMBOL", multiVals = "first")))
+  #   # coerce to char
+  #   goseq_out$genes <- unlist(lapply(goseq_out$genes, function(arg) paste(arg, collapse = ",")))
+  #   # coerce to char
+  #   goseq_out$genesymbols <- unlist(lapply(goseq_out$genesymbols, function(arg) paste(arg, collapse = ",")))
+  # }
+  # 
+  # return(goseq_out)
 }

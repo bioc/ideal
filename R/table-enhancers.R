@@ -3,20 +3,22 @@
 
 
 createLinkGO <- function(val) {
-  sprintf('<a href="http://amigo.geneontology.org/amigo/term/%s" target="_blank" class="btn btn-primary">%s</a>', val, val)
+  .Deprecated(old = "createLinkGO", new = "mosdef::create_link_GO")
+  
+  mosdef::create_link_GO(val = val)
 }
 
 createLinkENS <- function(val, species = "Mus_musculus") {
-  paste0('<a href="http://www.ensembl.org/', species, "/Gene/Summary?g=", val, '" target="_blank" class="btn btn-primary">', val, "</a>")
+  .Deprecated(old = "createLinkENS", new = "mosdef::create_link_ENSEMBL")
+  
+  mosdef::create_link_ENSEMBL(val = val, species = species)
 }
 
 createLinkGeneSymbol <- function(val) {
-  # possibilities:
-  # ncbi
-  # genecards
-  paste0('<a href="http://www.ncbi.nlm.nih.gov/gene/?term=', val, '[sym]" target="_blank" class="btn btn-primary">', val, "</a>")
+  .Deprecated(old = "createLinkGeneSymbol", new = "mosdef::create_link_NCBI")
+  
+  mosdef::create_link_NCBI(val = val)
 }
-
 
 
 geneinfo <- function(gene_id) {

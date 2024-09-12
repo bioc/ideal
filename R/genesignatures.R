@@ -117,7 +117,7 @@ sig_heatmap <- function(vst_data, my_signature,
   }
 
   if (de_only) {
-    de_res <- deseqresult2DEgenes(res_data, FDR)
+    de_res <- mosdef::deresult_to_df(res_data, FDR)
     de_genes <- de_res$id
     de_to_keep <- rownames(mydata_sig) %in% de_genes
     mydata_sig <- mydata_sig[de_to_keep, ]
