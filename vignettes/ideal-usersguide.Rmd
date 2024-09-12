@@ -498,33 +498,37 @@ Where possible, for each function a code snippet will be provided for its typica
 
 `deseqresult2DEgenes` and `deseqresult2tbl` generate a tidy table with the results of DESeq2, sorted by the values in the `padj` column.
 
+From version 1.30.0 onwards, the `deseqresult2tbl()` and `deseqresult2DEgenes()` functions have been deprecated, in favor of the equivalent `mosdef::deresult_to_df()` function, which is more robust and flexible in its usage.
+
 ```{r res2tbl}
 summary(res_airway)
 res_airway
 
-head(deseqresult2tbl(res_airway))
+head(mosdef::deresult_to_df(res_airway))
 ```
 
-In particular, `deseqresult2DEgenes` only includes genes detected as DE.
+In particular, `deseqresult2DEgenes` only includes genes detected as DE - this is also covered by `mosdef::deresult_to_df()` in the newer versions.
 
 ```{r res2de}
-head(deseqresult2DEgenes(res_airway, FDR = 0.05))
+head(mosdef::deresult_to_df(res_airway, FDR = 0.05))
 # the output in the first lines is the same, but
 dim(res_airway)
-dim(deseqresult2DEgenes(res_airway))
+dim(mosdef::deresult_to_df(res_airway))
 ```
 
 This tables can be enhanced with clickable links to the ENSEMBL and NCBI gene databases by the following commands:
 
 ```{r res-enhance}
-myde <- deseqresult2DEgenes(res_airway, FDR = 0.05)
+myde <- mosdef::deresult_to_df(res_airway, FDR = 0.05)
 myde$symbol <- mapIds(org.Hs.eg.db, keys = as.character(myde$id), column = "SYMBOL", keytype = "ENSEMBL")
 
 myde_enhanced <- myde
-myde_enhanced$id <- ideal:::createLinkENS(myde_enhanced$id, species = "Homo_sapiens")
-myde_enhanced$symbol <- ideal:::createLinkGeneSymbol(myde_enhanced$symbol)
+myde_enhanced$id <- mosdef::create_link_ENSEMBL(myde_enhanced$id, species = "Homo_sapiens")
+myde_enhanced$symbol <- mosdef::create_link_NCBI(myde_enhanced$symbol)
+
 DT::datatable(myde_enhanced[1:100, ], escape = FALSE)
 ```
+
 
 ## `ggplotCounts`
 
@@ -564,7 +568,7 @@ Its counterpart, based on the `r Biocpkg("topGO")` package, can be found in the 
 <!-- maybe eval=FALSE here? -->
 
 ```{r goseq, eval=FALSE}
-res_subset <- deseqresult2DEgenes(res_airway)[1:100, ] # taking only a subset of the DE genes
+res_subset <- mosdef::deresult_to_df(res_airway)[1:100, ] # taking only a subset of the DE genes
 myde <- res_subset$id
 myassayed <- rownames(res_airway)
 mygo <- goseqTable(
@@ -585,7 +589,7 @@ As for the results, this table can be enhanced by adding the links for each cate
 ```{r go-enhance, eval=FALSE}
 mygo_enhanced <- mygo
 # using the unexported function to link the GO term to the entry in the AmiGO db
-mygo_enhanced$category <- ideal:::createLinkGO(mygo_enhanced$category)
+mygo_enhanced$category <- mosdef::create_link_GO(mygo_enhanced$category)
 DT::datatable(mygo_enhanced, escape = FALSE)
 ```
 
