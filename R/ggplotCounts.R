@@ -3,23 +3,25 @@
 #' Plot for normalized counts of a single gene, with jittered points superimposed
 #' on the boxplot
 #'
-#' Note: this function relies on the \code{\link{plotCounts}} function of DESeq2,
+#' Note: this function relies on the [plotCounts()] function of DESeq2,
 #' therefore pseudocounts of 0.5 are added to each point
 #'
-#' @param dds A \code{\link{DESeqDataSet}} object.
+#' @param dds A [DESeqDataSet()] object.
 #' @param gene A character, specifying the name of the gene to plot
 #' @param intgroup Interesting groups: a character vector of
-#' names in \code{colData(dds)} to use for grouping
-#' @param annotation_obj A \code{data.frame} object, with \code{row.names} as gene
-#' identifiers (e.g. ENSEMBL ids) and a column, \code{gene_name}, containing
+#' names in `colData(dds)` to use for grouping
+#' @param annotation_obj A `data.frame` object, with `row.names` as gene
+#' identifiers (e.g. ENSEMBL ids) and a column, `gene_name`, containing
 #' e.g. HGNC-based gene symbols. Optional.
 #' @param transform Logical value, corresponding whether to have log scale y-axis
 #' or not. Defaults to TRUE.
-#' @param labels_repel Logical value. Whether to use \code{ggrepel}'s functions to
+#' @param labels_repel Logical value. Whether to use `ggrepel`'s functions to
 #' place labels; defaults to TRUE.
 #'
-#' @return An object created by \code{ggplot}
+#' @return An object created by `ggplot`
+#' 
 #' @importFrom mosdef gene_plot
+#' 
 #' @export
 #'
 #' @examples

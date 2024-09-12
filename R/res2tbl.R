@@ -2,7 +2,7 @@
 #'
 #' Generate a tidy table with the results of DESeq
 #'
-#' @param deseqresult A \code{\link{DESeqResults}} object
+#' @param deseqresult A [DESeqResults()] object
 #'
 #' @return A "tidy" data.frame with all genes
 #' @export
@@ -34,7 +34,7 @@ deseqresult2tbl <- function(deseqresult) {
 #'
 #' Generate a tidy table with the DE genes from the results of DESeq
 #'
-#' @param deseqresult A \code{\link{DESeqResults}} object
+#' @param deseqresult A [DESeqResults()] object
 #' @param FDR Numeric value, the significance level for thresholding adjusted p-values
 #'
 #' @return A "tidy" data.frame with only genes marked as differentially expressed

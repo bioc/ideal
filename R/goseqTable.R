@@ -3,21 +3,21 @@
 #' A wrapper for extracting functional GO terms enriched in a list of (DE) genes,
 #' based on the algorithm and the implementation in the goseq package
 #'
-#' Note: the feature length retrieval is based on the \code{\link{goseq}} function,
+#' Note: the feature length retrieval is based on the [goseq()] function,
 #' and requires that the corresponding TxDb packages are installed and available
 #'
 #' @param de.genes A vector of (differentially expressed) genes
 #' @param assayed.genes A vector of background genes, e.g. all (expressed) genes
 #' in the assays
 #' @param genome A string identifying the genome that genes refer to, as in the
-#' \code{\link{goseq}} function
+#' [goseq()] function
 #' @param id A string identifying the gene identifier used by genes, as in the
-#' \code{\link{goseq}} function
+#' [goseq()] function
 #' @param testCats A vector specifying which categories to test for over representation amongst DE genes - can be any combination of "GO:CC", "GO:BP", "GO:MF" & "KEGG"
 #' @param FDR_GO_cutoff Numeric value for subsetting the results
 #' @param nTop Number of categories to extract, and optionally process for adding
 #' genes to the respective terms
-#' @param orgDbPkg Character string, named as the \code{org.XX.eg.db}
+#' @param orgDbPkg Character string, named as the `org.XX.eg.db`
 #' package which should be available in Bioconductor
 #' @param addGeneToTerms Logical, whether to add a column with all genes annotated
 #' to each GO term

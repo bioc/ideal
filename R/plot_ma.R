@@ -3,16 +3,16 @@
 #' MA-plot from base means and log fold changes, in the ggplot2 framework, with
 #' additional support to annotate genes if provided.
 #'
-#' The genes of interest are to be provided as gene symbols if a \code{symbol}
-#' column is provided in \code{res_obj}, or else by using  the identifiers specified
+#' The genes of interest are to be provided as gene symbols if a `symbol`
+#' column is provided in `res_obj`, or else by using  the identifiers specified
 #' in the row names
 #'
-#' @param res_obj A \code{\link{DESeqResults}} object
+#' @param res_obj A [DESeqResults()] object
 #' @param FDR Numeric value, the significance level for thresholding adjusted p-values
 #' @param point_alpha Alpha transparency value for the points (0 = transparent, 1 = opaque)
 #' @param sig_color Color to use to mark differentially expressed genes. Defaults to red
-#' @param annotation_obj A \code{data.frame} object, with row.names as gene
-#' identifiers (e.g. ENSEMBL ids) and a column, \code{gene_name}, containing
+#' @param annotation_obj A `data.frame` object, with row.names as gene
+#' identifiers (e.g. ENSEMBL ids) and a column, `gene_name`, containing
 #' e.g. HGNC-based gene symbols. Optional
 #' @param draw_y0 Logical, whether to draw the horizontal line at y=0. Defaults to
 #' TRUE.
@@ -22,16 +22,16 @@
 #' @param xlab X axis label, defaults to "mean of normalized counts - log10 scale"
 #' @param ylim Vector of two numeric values, Y axis limits to restrict the view
 #' @param add_rug Logical, whether to add rug plots in the margins
-#' @param intgenes Vector of genes of interest. Gene symbols if a \code{symbol}
-#' column is provided in \code{res_obj}, or else the identifiers specified in the
+#' @param intgenes Vector of genes of interest. Gene symbols if a `symbol`
+#' column is provided in `res_obj`, or else the identifiers specified in the
 #' row names
 #' @param intgenes_color The color to use to mark the genes on the main plot.
 #' @param labels_intgenes Logical, whether to add the gene identifiers/names close
 #' to the marked plots
-#' @param labels_repel Logical, whether to use \code{geom_text_repel} for placing the
+#' @param labels_repel Logical, whether to use `geom_text_repel` for placing the
 #' labels on the features to mark
 #'
-#' @return An object created by \code{ggplot}
+#' @return An object created by `ggplot`
 #' @export
 #'
 #' @examples

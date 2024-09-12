@@ -34,11 +34,11 @@ read_gmt <- function(gmtfile) {
 #' Plot a heatmap for the selected gene signature on the provided data, with the
 #' possibility to compactly display also DE only genes
 #'
-#' @param vst_data A \code{\link{DESeqTransform}} object - usually the variance
+#' @param vst_data A [DESeqTransform()] object - usually the variance
 #' stabilized transformed data, which will be used to extract the expression values
 #' @param my_signature A character vector, usually named, containing the genes
 #' which compose the gene signature
-#' @param res_data A \code{\link{DESeqResults}} object. If not provided, it can
+#' @param res_data A [DESeqResults()] object. If not provided, it can
 #' be computed during the execution of the application
 #' @param FDR Numeric value between 0 and 1, the False Discovery Rate
 #' @param de_only Logical, whether to display only DE genes belonging to the pathway -
@@ -57,7 +57,7 @@ read_gmt <- function(gmtfile) {
 #' @param scale_row Logical, whether to perform row-based standardization of the
 #' expression values
 #'
-#' @return A plot based on the \code{pheatmap} function
+#' @return A plot based on the `pheatmap` function
 #' @export
 #'
 #' @examples

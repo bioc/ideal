@@ -9,8 +9,8 @@
 #' one of the workflows which include this package, e.g. in the context of the
 #' ideal package.
 #'
-#' @param dds A \code{\link{DESeqDataSet}} object.
-#' @param res A \code{\link{DESeqResults}} object.
+#' @param dds A [DESeqDataSet()] object.
+#' @param res A [DESeqResults()] object.
 #'
 #' @return A SummarizedExperiment object, with raw counts, normalized counts, and
 #' variance-stabilizing transformed counts in the assay slots; and with colData

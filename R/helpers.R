@@ -38,7 +38,7 @@ footer <- function() {
 #'
 #' @param file The name of the file which the data are to be read from
 #' @param sep_list A vector containing the candidates for being identified as
-#' separators. Defaults to \code{c(",", "\t", ";"," ")}
+#' separators. Defaults to `c(",", "\t", ";"," ")`
 #'
 #' @return A character value, corresponding to the guessed separator. One of ","
 #' (comma), "\\t" (tab), ";" (semicolon)," " (whitespace)

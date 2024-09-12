@@ -5,24 +5,24 @@
 #' ideal makes differential expression analysis interactive, easy and reproducible.
 #' This function launches the main application included in the package.
 #'
-#' @param dds_obj A \code{\link{DESeqDataSet}} object. If not provided, then a
-#' \code{countmatrix} and a \code{expdesign} need to be provided. If none of
+#' @param dds_obj A [DESeqDataSet()] object. If not provided, then a
+#' `countmatrix` and a `expdesign` need to be provided. If none of
 #' the above is provided, it is possible to upload the data during the
 #' execution of the Shiny App
-#' @param res_obj  A \code{\link{DESeqResults}} object. If not provided, it can
+#' @param res_obj  A [DESeqResults()] object. If not provided, it can
 #' be computed during the execution of the application
-#' @param annotation_obj A \code{data.frame} object, with row.names as gene
-#' identifiers (e.g. ENSEMBL ids) and a column, \code{gene_name}, containing
+#' @param annotation_obj A `data.frame` object, with row.names as gene
+#' identifiers (e.g. ENSEMBL ids) and a column, `gene_name`, containing
 #' e.g. HGNC-based gene symbols. If not provided, it can be constructed during
 #' the execution via the org.eg.XX.db packages - these need to be installed
 #' @param countmatrix A count matrix, with genes as rows and samples as columns.
 #' If not provided, it is possible to upload the data during the execution of
 #' the Shiny App
-#' @param expdesign A \code{data.frame} containing the info on the covariates
+#' @param expdesign A `data.frame` containing the info on the covariates
 #' of each sample. If not provided, it is possible to upload the data during the
 #' execution of the Shiny App
 #' @param gene_signatures A list of vectors, one for each pathway/signature. This
-#' is for example the output of the \code{\link{read_gmt}} function. The provided
+#' is for example the output of the [read_gmt()] function. The provided
 #' object can also be replaced during runtime in the dedicated upload widget.
 #'
 #' @return A Shiny App is launched for interactive data exploration and
