@@ -12,7 +12,6 @@ Description: This package provides functions for an Interactive
     of differential expression. A Shiny application encapsulates
     the whole package.
 License: MIT + file LICENSE
-LazyData: TRUE
 Depends: topGO
 Imports: 
     DESeq2, 
