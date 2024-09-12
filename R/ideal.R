@@ -4354,7 +4354,10 @@ ideal <- function(dds_obj = NULL,
       selectedGene <- as.character(curDataClick()$ID)
       selectedGeneSymbol <- values$annotation_obj$gene_name[match(selectedGene, values$annotation_obj$gene_id)]
 
-      p <- ggplotCounts(values$dds_obj, selectedGene, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = selectedGene, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
 
       if (input$ylimZero_genes) {
         p <- p + ylim(0.1, NA)
@@ -4501,7 +4504,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4535,7 +4541,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4569,7 +4578,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4603,7 +4615,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }

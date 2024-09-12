@@ -521,6 +521,8 @@ ggplotCounts(dds = dds_airway,
 
 When used in the context of the app, it is possible to seamless search for genes also by their gene name, making exploration even more immediate.
 
+From version 1.30.0 onwards, the `ggplotCounts()` function has been deprecated, in favor of the equivalent `mosdef::gene_plot()` function, which is more robust and flexible in its usage.
+
 ### `goseqTable`
 
 `goseqTable` is a wrapper to extract the functional GO terms enriched in  in a list of (DE) genes, based on the algorithm and the implementation in the *[goseq](http://bioconductor.org/packages/goseq)* package.
@@ -625,7 +627,7 @@ mygo_enhanced$category <- ideal:::createLinkGO(mygo_enhanced$category)
 DT::datatable(mygo_enhanced,escape=FALSE)
 ```
 
-
+From version 1.30.0 onwards, the `goseqTable()` function has been deprecated, in favor of the equivalent `mosdef::run_goseq()` function, which is faster, more robust and flexible in its usage.
 
 ### `plot_ma`
 

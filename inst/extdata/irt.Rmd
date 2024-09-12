@@ -266,7 +266,10 @@ if(length(input$color_by) > 0 &
   print(length(myids))
   
   for(myid in myids) {
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by,annotation_obj=values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by,
+                             annotation_obj=values$annotation_obj)
       if(input$ylimZero_genefinder)
         p <- p + ylim(0.1, NA)
       print(p)
