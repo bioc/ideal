@@ -464,7 +464,7 @@ footertemplate <- function(){
         tags$a(href="https://github.com/federicomarini/ideal", "ideal"), br(),
         "ideal is a project developed by Federico Marini in the Bioinformatics division of the ",
         tags$a(href="http://www.unimedizin-mainz.de/imbei","IMBEI"),br(),
-        "Development of the pcaExplorer package is on ",
+        "Development of the ideal package is on ",
         tags$a(href="https://github.com/federicomarini/ideal", "GitHub")
       )
     )
