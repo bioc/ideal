@@ -26,7 +26,6 @@ Imports:
     heatmaply, 
     plotly,
     pheatmap,
-    pcaExplorer, 
     IHW, 
     gplots, 
     UpSetR, 
@@ -50,8 +49,11 @@ Imports:
     shinyAce, 
     BiocParallel, 
     grDevices, 
+    graphics,
     base64enc,
-    methods
+    methods,
+    utils,
+    stats
 Suggests: 
     testthat, 
     BiocStyle, 
