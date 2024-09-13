@@ -1,4 +1,4 @@
-# ideal 1.30.0
+# ideal 1.99.0
 
 ## Other notes
 
@@ -7,6 +7,7 @@
 * The `deseqresult2tbl()` and `deseqresult2DEgenes()` are now replaced by the more flexible `mosdef::deresult_to_df()`
 * The internally defined `createLinkENS()`, `createLinkGeneSymbol()`, and `createLinkGO()` are now replaced by the equivalent functions in `mosdef`
 * The Roxygen-based documentation now supports markdown. No visible changes should appear to the user, as the content should have stayed fairly the same
+* Although no visible changes for the end user are expected, the incoming major version bump will reflect the change in the dependency graph, ensuring that this is noticed at least at the version numbering level
 
 # ideal 1.18.0
 
