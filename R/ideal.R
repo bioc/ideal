@@ -1488,8 +1488,10 @@ ideal <- function(dds_obj = NULL,
         aw <- requireNamespace("airway", quietly = TRUE)
         incProgress(0.2, detail = "`airway` package loaded")
         if (aw) {
-          data(airway, package = "airway", envir = environment())
-
+          data_env <- new.env(parent = emptyenv())
+          data("airway", envir = data_env, package = "airway")
+          airway <- data_env[["airway"]]
+          
           cm_airway <- assay(airway)
           incProgress(0.7, detail = "Count matrix loaded")
           ed_airway <- as.data.frame(colData(airway))
