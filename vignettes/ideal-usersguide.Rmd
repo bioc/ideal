@@ -349,10 +349,10 @@ This package provides a `RangedSummarizedExperiment` object of read counts in ge
 To run `r Biocpkg("ideal")` on this dataset, the following commands are required. First, prepare the objects to be passed as parameters of `r Biocpkg("ideal")`.
 
 ```{r loadairway, message=FALSE}
-library(airway)
-library(DESeq2)
+library("airway")
+library("DESeq2")
 
-data(airway)
+data("airway", package = "airway")
 
 dds_airway <- DESeqDataSet(airway, design = ~ cell + dex)
 dds_airway

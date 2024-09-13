@@ -43,8 +43,8 @@ Note: this function relies on the \code{\link[=plotCounts]{plotCounts()}} functi
 therefore pseudocounts of 0.5 are added to each point
 }
 \examples{
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),

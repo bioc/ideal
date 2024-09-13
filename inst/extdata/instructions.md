@@ -277,10 +277,10 @@ To run *[ideal](http://bioconductor.org/packages/ideal)* on this dataset, the fo
 
 
 ```r
-library(airway)
-library(DESeq2)
+library("airway")
+library("DESeq2")
 
-data(airway)
+data("airway", package = "airway")
 
 dds_airway <- DESeqDataSet(airway,design= ~ cell + dex)
 dds_airway

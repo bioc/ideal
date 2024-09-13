@@ -35,14 +35,14 @@
 #'
 #' @examples
 #' # with simulated data...
-#' library(DESeq2)
+#' library("DESeq2")
 #' dds <- DESeq2::makeExampleDESeqDataSet(n = 100, m = 8)
 #' cm <- counts(dds)
 #' cd <- colData(dds)
 #'
 #' # with the well known airway package...
-#' library(airway)
-#' data(airway)
+#' library("airway")
+#' data("airway", package = "airway")
 #' airway
 #' dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
 #'   colData = colData(airway),
