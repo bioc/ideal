@@ -33,7 +33,6 @@
 #' @import GO.db
 #' @importFrom UpSetR upset fromList
 #' @importFrom goseq getgo goseq nullp
-#' @import pcaExplorer
 #' @importFrom gplots venn
 #' @importFrom IHW ihw
 #' @importFrom rentrez entrez_summary
@@ -48,8 +47,12 @@
 #' @importFrom shinyBS bsTooltip bsCollapse bsCollapsePanel
 #' @importFrom ggrepel geom_text_repel
 #' @importFrom base64enc dataURI
-#' @importFrom grDevices dev.off pdf axisTicks
+#' @importFrom grDevices dev.off pdf axisTicks colorRamp rgb
+#' @importFrom graphics pairs par strwidth text
 #' @import methods
+#' @importFrom utils count.fields data head installed.packages 
+#' packageDescription packageVersion read.delim sessionInfo str tail write.csv
+#' @importFrom stats as.formula cor quantile sd terms.formula var
 #'
 #' @author
 #' Federico Marini \email{marinif@@uni-mainz.de}, 2016-2017
