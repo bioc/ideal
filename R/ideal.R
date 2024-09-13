@@ -29,7 +29,7 @@
 #' differential expression analysis
 #' 
 #' @importFrom mosdef run_topGO run_goseq gene_plot create_link_ENSEMBL
-#' create_link_NCBI create_link_GO
+#' create_link_NCBI create_link_GO get_annotation_orgdb
 #'
 #' @export
 #'
@@ -2032,7 +2032,8 @@ ideal <- function(dds_obj = NULL,
     output$corrplot <- renderPlot({
       if (input$compute_pairwisecorr) {
         withProgress(
-          pair_corr(current_countmat(),
+          mosdef::pair_corr(
+            current_countmat(),
             method = input$corr_method,
             log = input$corr_uselogs,
             use_subset = input$corr_usesubset
@@ -2299,7 +2300,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "Matching identifiers")
           tryCatch(
             {
-              annotation_obj <- get_annotation_orgdb(values$dds_obj, orgdb_species = annopkg, idtype = input$idtype)
+              annotation_obj <- mosdef::get_annotation_orgdb(
+                de_container = values$dds_obj, 
+                orgdb_package = annopkg, 
+                id_type = input$idtype)
+              
               values$annotation_obj <- annotation_obj
               # and also, set the species in the reactiveValues
               values$cur_species <- input$speciesSelect
