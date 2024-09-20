@@ -29,33 +29,34 @@ vignette: >
 ---
 
 
-<!-- **Package**: `r Rpackage("ideal")` -->
-
-<!-- **Authors**: `r packageDescription("ideal")[["Author"]]` -->
-
-<!-- **Version**: `r packageDescription("ideal")$Version` -->
-
-**Compiled date**: `r Sys.Date()`
-
-**Last edited**: 2019-02-06
-
-**License**: `r packageDescription("ideal")[["License"]]`
+**Package**: `r Rpackage("ideal")`<br/>
+**Authors**: `r packageDescription("ideal")[["Author"]]`<br/>
+**Version**: `r packageDescription("ideal")$Version`<br/>
+**Compiled date**: `r Sys.Date()`<br/>
+**Last edited**: 2019-02-06<br/>
+**License**: `r packageDescription("ideal")[["License"]]`<br/>
 
 
 ```{r setup, echo=FALSE, warning=FALSE}
+library("knitr")
 set.seed(42)
-# knitr::opts_chunk$set(comment=NA,
-#                fig.align="center",
-#                fig.width = 7,
-#                fig.height = 7,
-#                warning=FALSE)
+opts_chunk$set(comment = "#>",
+               fig.align = "center",
+               warning = FALSE)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+
+```
+
+```{r, out.width="50%", echo=FALSE}
+knitr::include_graphics(system.file("www", "ideal.png", package = "ideal"))
 ```
 
 # Getting started
 
-<p align="center">
-<img src="ideal_logo_v2.png"/>
-</p>
+<!-- <p align="center"> -->
+<!-- <img src="ideal_logo_v2.png"/> -->
+<!-- </p> -->
 
 `r Biocpkg("ideal")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project. 
 To install the package, start R and enter:
@@ -134,7 +135,7 @@ You can obtain more information on the formats that are expected and required to
 For the sake of completeness, you can see an overview reported in the image below.
 
 ```{r, out.width="100%", echo=FALSE}
-knitr::include_graphics(system.file("www", "help_dataformats.png", package = "pcaExplorer"))
+knitr::include_graphics(system.file("www", "help_dataformats.png", package = "ideal"))
 ```
 
 The value to specify for the experimental design is best selected live in Step 2 of the Data Setup panel (see more in Section \@ref(datasetup)) - or if passing directly the `dds` object in the call to `ideal`, is already contained in the `dds` itself. 
