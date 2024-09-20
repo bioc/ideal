@@ -184,9 +184,9 @@ if(!is.null(values$res_obj)) {
   print(p4)
 
   mydf <- as.data.frame(values$res_obj[order(values$res_obj$padj),])#[1:500,]
-  rownames(mydf) <- createLinkENS(rownames(mydf),species = annoSpecies_df$ensembl_db[match(input$speciesSelect,annoSpecies_df$species)]) ## TODO: check what are the species from ensembl and
+  rownames(mydf) <- mosdef::create_link_ENSEMBL(rownames(mydf),species = annoSpecies_df$ensembl_db[match(input$speciesSelect,annoSpecies_df$species)]) ## TODO: check what are the species from ensembl and
       ## TODO: add a check to see if wanted?
-  mydf$symbol <- createLinkGeneSymbol(mydf$symbol)
+  mydf$symbol <- mosdef::create_link_NCBI(mydf$symbol)
   datatable(mydf, escape = FALSE)                       
 }
 ```
@@ -266,7 +266,10 @@ if(length(input$color_by) > 0 &
   print(length(myids))
   
   for(myid in myids) {
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by,annotation_obj=values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by,
+                             annotation_obj=values$annotation_obj)
       if(input$ylimZero_genefinder)
         p <- p + ylim(0.1, NA)
       print(p)
@@ -312,61 +315,61 @@ if(!is.null(values$res_obj)) {
 # here only for goana
 if(!is.null(values$gse_up)) {
   mytbl <- values$gse_up
-  rownames(mytbl) <- createLinkGO(rownames(mytbl))
+  rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$gse_down)) {
   mytbl <- values$gse_down
-  rownames(mytbl) <- createLinkGO(rownames(mytbl))
+  rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$gse_updown)) {
   mytbl <- values$gse_updown
-  rownames(mytbl) <- createLinkGO(rownames(mytbl))
+  rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$gse_list1)) {
   mytbl <- values$gse_list1
-  rownames(mytbl) <- createLinkGO(rownames(mytbl))
+  rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$gse_list2)) {
   mytbl <- values$gse_list2
-  rownames(mytbl) <- createLinkGO(rownames(mytbl))
+  rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
   datatable(mytbl,escape=FALSE)
 }
 
 # here only for topgo
 if(!is.null(values$topgo_up)) {
   mytbl <- values$topgo_up
-  mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+  mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$topgo_down)) {
   mytbl <- values$topgo_down
-  mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+  mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$topgo_updown)) {
   mytbl <- values$topgo_updown
-  mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+  mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$topgo_list1)) {
   mytbl <- values$topgo_list1
-  mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+  mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
   datatable(mytbl,escape=FALSE)
 }
 if(!is.null(values$topgo_list2)) {
   mytbl <- values$topgo_list2
-  mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+  mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
   datatable(mytbl,escape=FALSE)
 }
 
 # similarly for goseq...
 if(!is.null(values$gse_updown_goseq)) {
   mytbl <- values$gse_updown_goseq
-  mytbl$category <- createLinkGO(mytbl$category)
+  mytbl$category <- mosdef::create_link_GO(mytbl$category)
   datatable(mytbl,escape=FALSE)
 }
  
@@ -461,7 +464,7 @@ footertemplate <- function(){
         tags$a(href="https://github.com/federicomarini/ideal", "ideal"), br(),
         "ideal is a project developed by Federico Marini in the Bioinformatics division of the ",
         tags$a(href="http://www.unimedizin-mainz.de/imbei","IMBEI"),br(),
-        "Development of the pcaExplorer package is on ",
+        "Development of the ideal package is on ",
         tags$a(href="https://github.com/federicomarini/ideal", "GitHub")
       )
     )

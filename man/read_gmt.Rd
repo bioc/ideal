@@ -20,7 +20,7 @@ Returns a list of pathways from a GMT file.
 # this example reads in the freely available pathways from wikipathways
 \dontrun{
 mysigs <- read_gmt(
-  "http://data.wikipathways.org/20180910/gmt/wikipathways-20180910-gmt-Homo_sapiens.gmt"
+  "http://data.wikipathways.org/20240910/gmt/wikipathways-20240910-gmt-Homo_sapiens.gmt"
 )
 head(mysigs)
 # see how the gene identifiers are encoded as ENTREZ id

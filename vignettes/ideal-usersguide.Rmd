@@ -29,33 +29,33 @@ vignette: >
 ---
 
 
-<!-- **Package**: `r Rpackage("ideal")` -->
-
-<!-- **Authors**: `r packageDescription("ideal")[["Author"]]` -->
-
-<!-- **Version**: `r packageDescription("ideal")$Version` -->
-
-**Compiled date**: `r Sys.Date()`
-
-**Last edited**: 2019-02-06
-
-**License**: `r packageDescription("ideal")[["License"]]`
+**Package**: `r Rpackage("ideal")`<br/>
+**Authors**: `r packageDescription("ideal")[["Author"]]`<br/>
+**Version**: `r packageDescription("ideal")$Version`<br/>
+**Compiled date**: `r Sys.Date()`<br/>
+**Last edited**: 2019-02-06<br/>
+**License**: `r packageDescription("ideal")[["License"]]`<br/>
 
 
 ```{r setup, echo=FALSE, warning=FALSE}
+library("knitr")
 set.seed(42)
-# knitr::opts_chunk$set(comment=NA,
-#                fig.align="center",
-#                fig.width = 7,
-#                fig.height = 7,
-#                warning=FALSE)
+opts_chunk$set(comment = "#>",
+               fig.align = "center",
+               warning = FALSE)
+stopifnot(requireNamespace("htmltools"))
+htmltools::tagList(rmarkdown::html_dependency_font_awesome())
+```
+
+```{r, out.width="50%", echo=FALSE}
+knitr::include_graphics(system.file("www", "ideal.png", package = "ideal"))
 ```
 
 # Getting started
 
-<p align="center">
-<img src="ideal_logo_v2.png"/>
-</p>
+<!-- <p align="center"> -->
+<!-- <img src="ideal_logo_v2.png"/> -->
+<!-- </p> -->
 
 `r Biocpkg("ideal")` is an R package distributed as part of the [Bioconductor](http://bioconductor.org) project. 
 To install the package, start R and enter:
@@ -134,7 +134,7 @@ You can obtain more information on the formats that are expected and required to
 For the sake of completeness, you can see an overview reported in the image below.
 
 ```{r, out.width="100%", echo=FALSE}
-knitr::include_graphics(system.file("www", "help_dataformats.png", package = "pcaExplorer"))
+knitr::include_graphics(system.file("www", "help_dataformats.png", package = "ideal"))
 ```
 
 The value to specify for the experimental design is best selected live in Step 2 of the Data Setup panel (see more in Section \@ref(datasetup)) - or if passing directly the `dds` object in the call to `ideal`, is already contained in the `dds` itself. 
@@ -349,10 +349,10 @@ This package provides a `RangedSummarizedExperiment` object of read counts in ge
 To run `r Biocpkg("ideal")` on this dataset, the following commands are required. First, prepare the objects to be passed as parameters of `r Biocpkg("ideal")`.
 
 ```{r loadairway, message=FALSE}
-library(airway)
-library(DESeq2)
+library("airway")
+library("DESeq2")
 
-data(airway)
+data("airway", package = "airway")
 
 dds_airway <- DESeqDataSet(airway, design = ~ cell + dex)
 dds_airway
@@ -498,33 +498,37 @@ Where possible, for each function a code snippet will be provided for its typica
 
 `deseqresult2DEgenes` and `deseqresult2tbl` generate a tidy table with the results of DESeq2, sorted by the values in the `padj` column.
 
+From version 1.30.0 onwards, the `deseqresult2tbl()` and `deseqresult2DEgenes()` functions have been deprecated, in favor of the equivalent `mosdef::deresult_to_df()` function, which is more robust and flexible in its usage.
+
 ```{r res2tbl}
 summary(res_airway)
 res_airway
 
-head(deseqresult2tbl(res_airway))
+head(mosdef::deresult_to_df(res_airway))
 ```
 
-In particular, `deseqresult2DEgenes` only includes genes detected as DE.
+In particular, `deseqresult2DEgenes` only includes genes detected as DE - this is also covered by `mosdef::deresult_to_df()` in the newer versions.
 
 ```{r res2de}
-head(deseqresult2DEgenes(res_airway, FDR = 0.05))
+head(mosdef::deresult_to_df(res_airway, FDR = 0.05))
 # the output in the first lines is the same, but
 dim(res_airway)
-dim(deseqresult2DEgenes(res_airway))
+dim(mosdef::deresult_to_df(res_airway))
 ```
 
 This tables can be enhanced with clickable links to the ENSEMBL and NCBI gene databases by the following commands:
 
 ```{r res-enhance}
-myde <- deseqresult2DEgenes(res_airway, FDR = 0.05)
+myde <- mosdef::deresult_to_df(res_airway, FDR = 0.05)
 myde$symbol <- mapIds(org.Hs.eg.db, keys = as.character(myde$id), column = "SYMBOL", keytype = "ENSEMBL")
 
 myde_enhanced <- myde
-myde_enhanced$id <- ideal:::createLinkENS(myde_enhanced$id, species = "Homo_sapiens")
-myde_enhanced$symbol <- ideal:::createLinkGeneSymbol(myde_enhanced$symbol)
+myde_enhanced$id <- mosdef::create_link_ENSEMBL(myde_enhanced$id, species = "Homo_sapiens")
+myde_enhanced$symbol <- mosdef::create_link_NCBI(myde_enhanced$symbol)
+
 DT::datatable(myde_enhanced[1:100, ], escape = FALSE)
 ```
+
 
 ## `ggplotCounts`
 
@@ -551,6 +555,8 @@ ggplotCounts(
 
 When used in the context of the app, it is possible to seamless search for genes also by their gene name, making exploration even more immediate.
 
+From version 1.30.0 onwards, the `ggplotCounts()` function has been deprecated, in favor of the equivalent `mosdef::gene_plot()` function, which is more robust and flexible in its usage.
+
 ## `goseqTable`
 
 `goseqTable` is a wrapper to extract the functional GO terms enriched in  in a list of (DE) genes, based on the algorithm and the implementation in the `r Biocpkg("goseq")` package.
@@ -562,7 +568,7 @@ Its counterpart, based on the `r Biocpkg("topGO")` package, can be found in the 
 <!-- maybe eval=FALSE here? -->
 
 ```{r goseq, eval=FALSE}
-res_subset <- deseqresult2DEgenes(res_airway)[1:100, ] # taking only a subset of the DE genes
+res_subset <- mosdef::deresult_to_df(res_airway)[1:100, ] # taking only a subset of the DE genes
 myde <- res_subset$id
 myassayed <- rownames(res_airway)
 mygo <- goseqTable(
@@ -583,10 +589,11 @@ As for the results, this table can be enhanced by adding the links for each cate
 ```{r go-enhance, eval=FALSE}
 mygo_enhanced <- mygo
 # using the unexported function to link the GO term to the entry in the AmiGO db
-mygo_enhanced$category <- ideal:::createLinkGO(mygo_enhanced$category)
+mygo_enhanced$category <- mosdef::create_link_GO(mygo_enhanced$category)
 DT::datatable(mygo_enhanced, escape = FALSE)
 ```
 
+From version 1.30.0 onwards, the `goseqTable()` function has been deprecated, in favor of the equivalent `mosdef::run_goseq()` function, which is faster, more robust and flexible in its usage.
 
 ## `plot_ma`
 

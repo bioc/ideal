@@ -20,13 +20,13 @@ sig_heatmap(
 )
 }
 \arguments{
-\item{vst_data}{A \code{\link{DESeqTransform}} object - usually the variance
+\item{vst_data}{A \code{\link[=DESeqTransform]{DESeqTransform()}} object - usually the variance
 stabilized transformed data, which will be used to extract the expression values}
 
 \item{my_signature}{A character vector, usually named, containing the genes
 which compose the gene signature}
 
-\item{res_data}{A \code{\link{DESeqResults}} object. If not provided, it can
+\item{res_data}{A \code{\link[=DESeqResults]{DESeqResults()}} object. If not provided, it can
 be computed during the execution of the application}
 
 \item{FDR}{Numeric value between 0 and 1, the False Discovery Rate}
@@ -63,8 +63,8 @@ possibility to compactly display also DE only genes
 }
 \examples{
 # with the well known airway package...
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),

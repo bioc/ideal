@@ -23,10 +23,10 @@ goseqTable(
 in the assays}
 
 \item{genome}{A string identifying the genome that genes refer to, as in the
-\code{\link{goseq}} function}
+\code{\link[=goseq]{goseq()}} function}
 
 \item{id}{A string identifying the gene identifier used by genes, as in the
-\code{\link{goseq}} function}
+\code{\link[=goseq]{goseq()}} function}
 
 \item{testCats}{A vector specifying which categories to test for over representation amongst DE genes - can be any combination of "GO:CC", "GO:BP", "GO:MF" & "KEGG"}
 
@@ -49,13 +49,13 @@ A wrapper for extracting functional GO terms enriched in a list of (DE) genes,
 based on the algorithm and the implementation in the goseq package
 }
 \details{
-Note: the feature length retrieval is based on the \code{\link{goseq}} function,
+Note: the feature length retrieval is based on the \code{\link[=goseq]{goseq()}} function,
 and requires that the corresponding TxDb packages are installed and available
 }
 \examples{
 
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),
@@ -64,7 +64,7 @@ dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
 dds_airway <- DESeq2::DESeq(dds_airway)
 res_airway <- DESeq2::results(dds_airway)
 
-res_subset <- deseqresult2DEgenes(res_airway)[1:100, ]
+res_subset <- mosdef::deresult_to_df(res_airway)[1:100, ]
 myde <- res_subset$id
 myassayed <- rownames(res_airway)
 \dontrun{

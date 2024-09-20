@@ -14,12 +14,12 @@ ideal(
 )
 }
 \arguments{
-\item{dds_obj}{A \code{\link{DESeqDataSet}} object. If not provided, then a
+\item{dds_obj}{A \code{\link[=DESeqDataSet]{DESeqDataSet()}} object. If not provided, then a
 \code{countmatrix} and a \code{expdesign} need to be provided. If none of
 the above is provided, it is possible to upload the data during the
 execution of the Shiny App}
 
-\item{res_obj}{A \code{\link{DESeqResults}} object. If not provided, it can
+\item{res_obj}{A \code{\link[=DESeqResults]{DESeqResults()}} object. If not provided, it can
 be computed during the execution of the application}
 
 \item{annotation_obj}{A \code{data.frame} object, with row.names as gene
@@ -36,7 +36,7 @@ of each sample. If not provided, it is possible to upload the data during the
 execution of the Shiny App}
 
 \item{gene_signatures}{A list of vectors, one for each pathway/signature. This
-is for example the output of the \code{\link{read_gmt}} function. The provided
+is for example the output of the \code{\link[=read_gmt]{read_gmt()}} function. The provided
 object can also be replaced during runtime in the dedicated upload widget.}
 }
 \value{
@@ -49,14 +49,14 @@ This function launches the main application included in the package.
 }
 \examples{
 # with simulated data...
-library(DESeq2)
+library("DESeq2")
 dds <- DESeq2::makeExampleDESeqDataSet(n = 100, m = 8)
 cm <- counts(dds)
 cd <- colData(dds)
 
 # with the well known airway package...
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),

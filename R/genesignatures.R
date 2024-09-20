@@ -12,7 +12,7 @@
 #' # this example reads in the freely available pathways from wikipathways
 #' \dontrun{
 #' mysigs <- read_gmt(
-#'   "http://data.wikipathways.org/20180910/gmt/wikipathways-20180910-gmt-Homo_sapiens.gmt"
+#'   "http://data.wikipathways.org/20240910/gmt/wikipathways-20240910-gmt-Homo_sapiens.gmt"
 #' )
 #' head(mysigs)
 #' # see how the gene identifiers are encoded as ENTREZ id
@@ -34,11 +34,11 @@ read_gmt <- function(gmtfile) {
 #' Plot a heatmap for the selected gene signature on the provided data, with the
 #' possibility to compactly display also DE only genes
 #'
-#' @param vst_data A \code{\link{DESeqTransform}} object - usually the variance
+#' @param vst_data A [DESeqTransform()] object - usually the variance
 #' stabilized transformed data, which will be used to extract the expression values
 #' @param my_signature A character vector, usually named, containing the genes
 #' which compose the gene signature
-#' @param res_data A \code{\link{DESeqResults}} object. If not provided, it can
+#' @param res_data A [DESeqResults()] object. If not provided, it can
 #' be computed during the execution of the application
 #' @param FDR Numeric value between 0 and 1, the False Discovery Rate
 #' @param de_only Logical, whether to display only DE genes belonging to the pathway -
@@ -57,13 +57,13 @@ read_gmt <- function(gmtfile) {
 #' @param scale_row Logical, whether to perform row-based standardization of the
 #' expression values
 #'
-#' @return A plot based on the \code{pheatmap} function
+#' @return A plot based on the `pheatmap` function
 #' @export
 #'
 #' @examples
 #' # with the well known airway package...
-#' library(airway)
-#' data(airway)
+#' library("airway")
+#' data("airway", package = "airway")
 #' airway
 #' dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
 #'   colData = colData(airway),
@@ -117,7 +117,7 @@ sig_heatmap <- function(vst_data, my_signature,
   }
 
   if (de_only) {
-    de_res <- deseqresult2DEgenes(res_data, FDR)
+    de_res <- mosdef::deresult_to_df(res_data, FDR)
     de_genes <- de_res$id
     de_to_keep <- rownames(mydata_sig) %in% de_genes
     mydata_sig <- mydata_sig[de_to_keep, ]

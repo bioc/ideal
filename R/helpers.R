@@ -38,7 +38,7 @@ footer <- function() {
 #'
 #' @param file The name of the file which the data are to be read from
 #' @param sep_list A vector containing the candidates for being identified as
-#' separators. Defaults to \code{c(",", "\t", ";"," ")}
+#' separators. Defaults to `c(",", "\t", ";"," ")`
 #'
 #' @return A character value, corresponding to the guessed separator. One of ","
 #' (comma), "\\t" (tab), ";" (semicolon)," " (whitespace)
@@ -80,7 +80,7 @@ shake_topGOtableResult <- function(obj,
   
   if(!all(c("GO.ID", "Term", "Annotated", "Significant", "Expected", "p.value_classic") %in%
           colnames(obj))) {
-    stop("The provided object must be of in the format specified by the `pcaExplorer::topGOtable` function")
+    stop("The provided object must be of in the format specified by the `mosdef::run_topGO` function")
   }
   
   if(!p_value_column %in% colnames(obj)) {
@@ -90,7 +90,7 @@ shake_topGOtableResult <- function(obj,
   
   if(!"genes" %in% colnames(obj)) {
     stop("The column `genes` is not present in the provided object and is required for properly running GeneTonic.",
-         "\nMaybe you did set `addGeneToTerms` to FALSE in the call to `pcaExplorer::topGOtable`?")
+         "\nMaybe you did set `add_gene_to_terms` to FALSE in the call to `mosdef::run_topGO`?")
   }
   
   # Thought: store somewhere the ontology if possible - in an extra column?

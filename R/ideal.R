@@ -5,41 +5,44 @@
 #' ideal makes differential expression analysis interactive, easy and reproducible.
 #' This function launches the main application included in the package.
 #'
-#' @param dds_obj A \code{\link{DESeqDataSet}} object. If not provided, then a
-#' \code{countmatrix} and a \code{expdesign} need to be provided. If none of
+#' @param dds_obj A [DESeqDataSet()] object. If not provided, then a
+#' `countmatrix` and a `expdesign` need to be provided. If none of
 #' the above is provided, it is possible to upload the data during the
 #' execution of the Shiny App
-#' @param res_obj  A \code{\link{DESeqResults}} object. If not provided, it can
+#' @param res_obj  A [DESeqResults()] object. If not provided, it can
 #' be computed during the execution of the application
-#' @param annotation_obj A \code{data.frame} object, with row.names as gene
-#' identifiers (e.g. ENSEMBL ids) and a column, \code{gene_name}, containing
+#' @param annotation_obj A `data.frame` object, with row.names as gene
+#' identifiers (e.g. ENSEMBL ids) and a column, `gene_name`, containing
 #' e.g. HGNC-based gene symbols. If not provided, it can be constructed during
 #' the execution via the org.eg.XX.db packages - these need to be installed
 #' @param countmatrix A count matrix, with genes as rows and samples as columns.
 #' If not provided, it is possible to upload the data during the execution of
 #' the Shiny App
-#' @param expdesign A \code{data.frame} containing the info on the covariates
+#' @param expdesign A `data.frame` containing the info on the covariates
 #' of each sample. If not provided, it is possible to upload the data during the
 #' execution of the Shiny App
 #' @param gene_signatures A list of vectors, one for each pathway/signature. This
-#' is for example the output of the \code{\link{read_gmt}} function. The provided
+#' is for example the output of the [read_gmt()] function. The provided
 #' object can also be replaced during runtime in the dedicated upload widget.
 #'
 #' @return A Shiny App is launched for interactive data exploration and
 #' differential expression analysis
+#' 
+#' @importFrom mosdef run_topGO run_goseq gene_plot create_link_ENSEMBL
+#' create_link_NCBI create_link_GO get_annotation_orgdb pair_corr
 #'
 #' @export
 #'
 #' @examples
 #' # with simulated data...
-#' library(DESeq2)
+#' library("DESeq2")
 #' dds <- DESeq2::makeExampleDESeqDataSet(n = 100, m = 8)
 #' cm <- counts(dds)
 #' cd <- colData(dds)
 #'
 #' # with the well known airway package...
-#' library(airway)
-#' data(airway)
+#' library("airway")
+#' data("airway", package = "airway")
 #' airway
 #' dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
 #'   colData = colData(airway),
@@ -1485,8 +1488,10 @@ ideal <- function(dds_obj = NULL,
         aw <- requireNamespace("airway", quietly = TRUE)
         incProgress(0.2, detail = "`airway` package loaded")
         if (aw) {
-          data(airway, package = "airway", envir = environment())
-
+          data_env <- new.env(parent = emptyenv())
+          data("airway", envir = data_env, package = "airway")
+          airway <- data_env[["airway"]]
+          
           cm_airway <- assay(airway)
           incProgress(0.7, detail = "Count matrix loaded")
           ed_airway <- as.data.frame(colData(airway))
@@ -2029,7 +2034,8 @@ ideal <- function(dds_obj = NULL,
     output$corrplot <- renderPlot({
       if (input$compute_pairwisecorr) {
         withProgress(
-          pair_corr(current_countmat(),
+          mosdef::pair_corr(
+            current_countmat(),
             method = input$corr_method,
             log = input$corr_uselogs,
             use_subset = input$corr_usesubset
@@ -2169,7 +2175,7 @@ ideal <- function(dds_obj = NULL,
 
     # DE genes lists ----------------------------------------------------------
     values$genelistUP <- reactive({
-      res_tbl <- deseqresult2DEgenes(values$res_obj, FDR = input$FDR)
+      res_tbl <- mosdef::deresult_to_df(values$res_obj, FDR = input$FDR)
       res_tbl_UP <- res_tbl[res_tbl$log2FoldChange > 0 & !is.na(res_tbl$padj), ]
       # res_tbl_DOWN <- res_tbl[res_tbl$log2FoldChange < 0 & !is.na(res_tbl$padj),]
 
@@ -2192,7 +2198,7 @@ ideal <- function(dds_obj = NULL,
     })
 
     values$genelistDOWN <- reactive({
-      res_tbl <- deseqresult2DEgenes(values$res_obj, FDR = input$FDR)
+      res_tbl <- mosdef::deresult_to_df(values$res_obj, FDR = input$FDR)
       # res_tbl_UP <- res_tbl[res_tbl$log2FoldChange > 0 & !is.na(res_tbl$padj),]
       res_tbl_DOWN <- res_tbl[res_tbl$log2FoldChange < 0 & !is.na(res_tbl$padj), ]
 
@@ -2215,7 +2221,7 @@ ideal <- function(dds_obj = NULL,
     })
 
     values$genelistUPDOWN <- reactive({
-      res_tbl <- deseqresult2DEgenes(values$res_obj, FDR = input$FDR)
+      res_tbl <- mosdef::deresult_to_df(values$res_obj, FDR = input$FDR)
 
       if ("symbol" %in% colnames(values$res_obj)) {
         if (!is.null(values$annotation_obj)) {
@@ -2296,7 +2302,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "Matching identifiers")
           tryCatch(
             {
-              annotation_obj <- get_annotation_orgdb(values$dds_obj, orgdb_species = annopkg, idtype = input$idtype)
+              annotation_obj <- mosdef::get_annotation_orgdb(
+                de_container = values$dds_obj, 
+                orgdb_package = annopkg, 
+                id_type = input$idtype)
+              
               values$annotation_obj <- annotation_obj
               # and also, set the species in the reactiveValues
               values$cur_species <- input$speciesSelect
@@ -2428,15 +2438,14 @@ ideal <- function(dds_obj = NULL,
           )
           incProgress(0.1, detail = "IDs mapped")
 
-          values$gse_up_goseq <- goseqTable(de.genes.ids,
-            assayed.genes.ids,
+          values$gse_up_goseq <- mosdef::run_goseq(
+            de_genes = de.genes.ids,
+            bg_genes = assayed.genes.ids,
             genome = annoSpecies_df[values$cur_species, ]$goseq_short,
             id = "ensGene",
             testCats = paste0("GO:", input$go_cats),
-            FDR_GO_cutoff = 1,
-            nTop = 200,
-            addGeneToTerms = TRUE,
-            orgDbPkg = annoSpecies_df[values$cur_species, ]$pkg # ,
+            add_gene_to_terms = TRUE,
+            mapping = annoSpecies_df[values$cur_species, ]$pkg
           )
 
           incProgress(0.89)
@@ -2467,10 +2476,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "IDs mapped")
           # library(topGO)
           # requireNamespace("topGO")
-          values$topgo_up <- pcaExplorer::topGOtable(de_symbols, bg_symbols,
+          values$topgo_up <- mosdef::run_topGO(
+            de_genes = de_symbols, bg_genes = bg_symbols,
             ontology = input$go_cats[1],
             mapping = annoSpecies_df[values$cur_species, ]$pkg,
-            geneID = "symbol", addGeneToTerms = TRUE
+            gene_id = "symbol", add_gene_to_terms = TRUE
           )
           incProgress(0.89)
         }
@@ -2552,15 +2562,14 @@ ideal <- function(dds_obj = NULL,
           )
           incProgress(0.1, detail = "IDs mapped")
 
-          values$gse_down_goseq <- goseqTable(de.genes.ids,
-            assayed.genes.ids,
+          values$gse_down_goseq <- mosdef::run_goseq(
+            de_genes = de.genes.ids,
+            bg_genes = assayed.genes.ids,
             genome = annoSpecies_df[values$cur_species, ]$goseq_short,
             id = "ensGene",
             testCats = paste0("GO:", input$go_cats),
-            FDR_GO_cutoff = 1,
-            nTop = 200,
-            addGeneToTerms = TRUE,
-            orgDbPkg = annoSpecies_df[values$cur_species, ]$pkg # ,
+            add_gene_to_terms = TRUE,
+            mapping = annoSpecies_df[values$cur_species, ]$pkg
           )
 
           incProgress(0.89)
@@ -2591,10 +2600,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "IDs mapped")
           # library(topGO)
           # requireNamespace("topGO")
-          values$topgo_down <- pcaExplorer::topGOtable(de_symbols, bg_symbols,
+          values$topgo_down <- mosdef::run_topGO(
+            de_genes = de_symbols, bg_genes = bg_symbols,
             ontology = input$go_cats[1], # will take the first ontology
             mapping = annoSpecies_df[values$cur_species, ]$pkg,
-            geneID = "symbol", addGeneToTerms = TRUE
+            gene_id = "symbol", add_gene_to_terms = TRUE
           )
           incProgress(0.89)
         }
@@ -2678,15 +2688,14 @@ ideal <- function(dds_obj = NULL,
           )
           incProgress(0.1, detail = "IDs mapped")
 
-          values$gse_updown_goseq <- goseqTable(de.genes.ids,
-            assayed.genes.ids,
+          values$gse_updown_goseq <- mosdef::run_goseq(
+            de_genes = de.genes.ids,
+            bg_genes = assayed.genes.ids,
             genome = annoSpecies_df[values$cur_species, ]$goseq_short,
             id = "ensGene",
             testCats = paste0("GO:", input$go_cats),
-            FDR_GO_cutoff = 1,
-            nTop = 200,
-            addGeneToTerms = TRUE,
-            orgDbPkg = annoSpecies_df[values$cur_species, ]$pkg # ,
+            add_gene_to_terms = TRUE,
+            mapping = annoSpecies_df[values$cur_species, ]$pkg
           )
 
           incProgress(0.89)
@@ -2717,10 +2726,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "IDs mapped")
           # library(topGO)
           # requireNamespace("topGO")
-          values$topgo_updown <- pcaExplorer::topGOtable(de_symbols, bg_symbols,
+          values$topgo_updown <- mosdef::run_topGO(
+            de_genes = de_symbols, bg_genes = bg_symbols,
             ontology = input$go_cats[1],
             mapping = annoSpecies_df[values$cur_species, ]$pkg,
-            geneID = "symbol", addGeneToTerms = TRUE
+            gene_id = "symbol", add_gene_to_terms = TRUE
           )
           incProgress(0.89)
         }
@@ -2797,15 +2807,14 @@ ideal <- function(dds_obj = NULL,
           )
           incProgress(0.1, detail = "IDs mapped")
 
-          values$gse_list1_goseq <- goseqTable(de.genes.ids,
-            assayed.genes.ids,
+          values$gse_list1_goseq <- mosdef::run_goseq(
+            de_genes = de.genes.ids,
+            bg_genes = assayed.genes.ids,
             genome = annoSpecies_df[values$cur_species, ]$goseq_short,
             id = "ensGene",
             testCats = paste0("GO:", input$go_cats),
-            FDR_GO_cutoff = 1,
-            nTop = 200,
-            addGeneToTerms = TRUE,
-            orgDbPkg = annoSpecies_df[values$cur_species, ]$pkg # ,
+            add_gene_to_terms = TRUE,
+            mapping = annoSpecies_df[values$cur_species, ]$pkg
           )
 
           incProgress(0.89)
@@ -2833,10 +2842,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "IDs mapped")
           # library(topGO)
           # requireNamespace("topGO")
-          values$topgo_list1 <- pcaExplorer::topGOtable(de_symbols, bg_symbols,
+          values$topgo_list1 <- mosdef::run_topGO(
+            de_genes = de_symbols, bg_genes = bg_symbols,
             ontology = input$go_cats[1],
             mapping = annoSpecies_df[values$cur_species, ]$pkg,
-            geneID = "symbol", addGeneToTerms = TRUE
+            gene_id = "symbol", add_gene_to_terms = TRUE
           )
           incProgress(0.89)
         }
@@ -2910,15 +2920,14 @@ ideal <- function(dds_obj = NULL,
           )
           incProgress(0.1, detail = "IDs mapped")
 
-          values$gse_list2_goseq <- goseqTable(de.genes.ids,
-            assayed.genes.ids,
+          values$gse_list2_goseq <- mosdef::run_goseq(
+            de_genes = de.genes.ids,
+            bg_genes = assayed.genes.ids,
             genome = annoSpecies_df[values$cur_species, ]$goseq_short,
             id = "ensGene",
             testCats = paste0("GO:", input$go_cats),
-            FDR_GO_cutoff = 1,
-            nTop = 200,
-            addGeneToTerms = TRUE,
-            orgDbPkg = annoSpecies_df[values$cur_species, ]$pkg # ,
+            add_gene_to_terms = TRUE,
+            mapping = annoSpecies_df[values$cur_species, ]$pkg # ,
           )
 
           incProgress(0.89)
@@ -2946,10 +2955,11 @@ ideal <- function(dds_obj = NULL,
           incProgress(0.1, detail = "IDs mapped")
           # library(topGO)
           # requireNamespace("topGO")
-          values$topgo_list2 <- pcaExplorer::topGOtable(de_symbols, bg_symbols,
+          values$topgo_list2 <- mosdef::run_topGO(
+            de_genes = de_symbols, bg_genes = bg_symbols,
             ontology = input$go_cats[1],
             mapping = annoSpecies_df[values$cur_species, ]$pkg,
-            geneID = "symbol", addGeneToTerms = TRUE
+            gene_id = "symbol", add_gene_to_terms = TRUE
           )
           incProgress(0.89)
         }
@@ -3136,7 +3146,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_up
-      rownames(mytbl) <- createLinkGO(rownames(mytbl))
+      rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
       datatable(mytbl, escape = FALSE)
     })
     output$DT_gse_down <- DT::renderDataTable({
@@ -3145,7 +3155,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_down
-      rownames(mytbl) <- createLinkGO(rownames(mytbl))
+      rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
       datatable(mytbl, escape = FALSE)
     })
     output$DT_gse_updown <- DT::renderDataTable({
@@ -3154,7 +3164,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_updown
-      rownames(mytbl) <- createLinkGO(rownames(mytbl))
+      rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
       datatable(mytbl, escape = FALSE)
     })
     output$DT_gse_list1 <- DT::renderDataTable({
@@ -3164,7 +3174,7 @@ ideal <- function(dds_obj = NULL,
       }
       mytbl <- values$gse_list1
       # mytbl$GOid <- rownames(mytbl)
-      rownames(mytbl) <- createLinkGO(rownames(mytbl))
+      rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
       datatable(mytbl, escape = FALSE)
     })
     output$DT_gse_list2 <- DT::renderDataTable({
@@ -3173,7 +3183,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_list2
-      rownames(mytbl) <- createLinkGO(rownames(mytbl))
+      rownames(mytbl) <- mosdef::create_link_GO(rownames(mytbl))
       datatable(mytbl, escape = FALSE)
     })
 
@@ -3184,7 +3194,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$topgo_up
-      mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+      mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
       DT::datatable(mytbl, escape = FALSE, selection = list(mode = "single"))
     })
     output$DT_gse_down_topgo <- DT::renderDataTable({
@@ -3193,7 +3203,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$topgo_down
-      mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+      mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
       DT::datatable(mytbl, escape = FALSE, selection = list(mode = "single"))
     })
     output$DT_gse_updown_topgo <- DT::renderDataTable({
@@ -3202,7 +3212,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$topgo_updown
-      mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+      mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
       DT::datatable(mytbl, escape = FALSE, selection = list(mode = "single"))
     })
     output$DT_gse_list1_topgo <- DT::renderDataTable({
@@ -3212,7 +3222,7 @@ ideal <- function(dds_obj = NULL,
       }
       mytbl <- values$topgo_list1
       # mytbl$GOid <- rownames(mytbl)
-      mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+      mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
       DT::datatable(mytbl, escape = FALSE, selection = list(mode = "single"))
     })
     output$DT_gse_list2_topgo <- DT::renderDataTable({
@@ -3222,7 +3232,7 @@ ideal <- function(dds_obj = NULL,
       }
       mytbl <- values$topgo_list2
       # mytbl$GOid <- rownames(mytbl)
-      mytbl$GO.ID <- createLinkGO(mytbl$GO.ID)
+      mytbl$GO.ID <- mosdef::create_link_GO(mytbl$GO.ID)
       DT::datatable(mytbl, escape = FALSE, selection = list(mode = "single"))
     })
 
@@ -3233,7 +3243,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_up_goseq
-      mytbl$category <- createLinkGO(mytbl$category)
+      mytbl$category <- mosdef::create_link_GO(mytbl$category)
       datatable(mytbl, escape = FALSE, rownames = FALSE)
     })
     output$DT_gse_down_goseq <- DT::renderDataTable({
@@ -3242,7 +3252,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_down_goseq
-      mytbl$category <- createLinkGO(mytbl$category)
+      mytbl$category <- mosdef::create_link_GO(mytbl$category)
       datatable(mytbl, escape = FALSE, rownames = FALSE)
     })
     output$DT_gse_updown_goseq <- DT::renderDataTable({
@@ -3251,7 +3261,7 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mytbl <- values$gse_updown_goseq
-      mytbl$category <- createLinkGO(mytbl$category)
+      mytbl$category <- mosdef::create_link_GO(mytbl$category)
       datatable(mytbl, escape = FALSE, rownames = FALSE)
     })
     output$DT_gse_list1_goseq <- DT::renderDataTable({
@@ -3261,7 +3271,7 @@ ideal <- function(dds_obj = NULL,
       }
       mytbl <- values$gse_list1_goseq
       # mytbl$GOid <- rownames(mytbl)
-      mytbl$category <- createLinkGO(mytbl$category)
+      mytbl$category <- mosdef::create_link_GO(mytbl$category)
       datatable(mytbl, escape = FALSE, rownames = FALSE)
     })
     output$DT_gse_list2_goseq <- DT::renderDataTable({
@@ -3271,7 +3281,7 @@ ideal <- function(dds_obj = NULL,
       }
       mytbl <- values$gse_list2_goseq
       # mytbl$GOid <- rownames(mytbl)
-      mytbl$category <- createLinkGO(mytbl$category)
+      mytbl$category <- mosdef::create_link_GO(mytbl$category)
       datatable(mytbl, escape = FALSE, rownames = FALSE)
     })
 
@@ -4042,9 +4052,9 @@ ideal <- function(dds_obj = NULL,
         return(NULL)
       }
       mydf <- as.data.frame(values$res_obj[order(values$res_obj$padj), ]) # [1:500,]
-      rownames(mydf) <- createLinkENS(rownames(mydf), species = annoSpecies_df$ensembl_db[match(input$speciesSelect, annoSpecies_df$species)]) ## TODO: check what are the species from ensembl and
+      rownames(mydf) <- mosdef::create_link_ENSEMBL(rownames(mydf), species = annoSpecies_df$ensembl_db[match(input$speciesSelect, annoSpecies_df$species)]) ## TODO: check what are the species from ensembl and
       ## TODO: add a check to see if wanted?
-      mydf$symbol <- createLinkGeneSymbol(mydf$symbol)
+      mydf$symbol <- mosdef::create_link_NCBI(mydf$symbol)
       datatable(mydf, escape = FALSE)
     })
 
@@ -4354,7 +4364,10 @@ ideal <- function(dds_obj = NULL,
       selectedGene <- as.character(curDataClick()$ID)
       selectedGeneSymbol <- values$annotation_obj$gene_name[match(selectedGene, values$annotation_obj$gene_id)]
 
-      p <- ggplotCounts(values$dds_obj, selectedGene, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = selectedGene, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
 
       if (input$ylimZero_genes) {
         p <- p + ylim(0.1, NA)
@@ -4417,7 +4430,7 @@ ideal <- function(dds_obj = NULL,
 
       normCounts <- as.data.frame(counts(estimateSizeFactors(values$dds_obj), normalized = TRUE))
       normCounts$id <- rownames(normCounts)
-      res_df <- deseqresult2tbl(values$res_obj)
+      res_df <- mosdef::deresult_to_df(values$res_obj)
 
       combi_obj <- dplyr::inner_join(res_df, normCounts, by = "id")
       combi_obj$symbol <- values$annotation_obj$gene_name[match(combi_obj$id, values$annotation_obj$gene_id)]
@@ -4448,7 +4461,7 @@ ideal <- function(dds_obj = NULL,
 
       normCounts <- as.data.frame(counts(estimateSizeFactors(values$dds_obj), normalized = TRUE))
       normCounts$id <- rownames(normCounts)
-      res_df <- deseqresult2tbl(values$res_obj)
+      res_df <- mosdef::deresult_to_df(values$res_obj)
 
       combi_obj <- dplyr::inner_join(res_df, normCounts, by = "id")
       combi_obj$symbol <- values$annotation_obj$gene_name[match(combi_obj$id, values$annotation_obj$gene_id)]
@@ -4501,7 +4514,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4535,7 +4551,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4569,7 +4588,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }
@@ -4603,7 +4625,10 @@ ideal <- function(dds_obj = NULL,
           mysim <- ""
         }
       }
-      p <- ggplotCounts(values$dds_obj, myid, intgroup = input$color_by, annotation_obj = values$annotation_obj)
+      p <- mosdef::gene_plot(de_container = values$dds_obj, 
+                             gene = myid, 
+                             intgroup = input$color_by, 
+                             annotation_obj = values$annotation_obj)
       if (input$ylimZero_genefinder) {
         p <- p + ylim(0.1, NA)
       }

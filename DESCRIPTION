@@ -1,8 +1,8 @@
 Package: ideal
 Type: Package
 Title: Interactive Differential Expression AnaLysis
-Version: 1.29.0
-Date: 2024-04-07
+Version: 1.99.0
+Date: 2024-09-13
 Authors@R: c(person("Federico", "Marini", role = c("aut", "cre"), 
     email ="marinif@uni-mainz.de", 
     comment = c(ORCID = '0000-0003-3252-7758')))
@@ -10,13 +10,15 @@ Description: This package provides functions for an Interactive
     Differential Expression AnaLysis of RNA-sequencing datasets, to
     extract quickly and effectively information downstream the step
     of differential expression. A Shiny application encapsulates
-    the whole package.
+    the whole package. Support for reproducibility of the whole analysis is 
+    provided by means of a template report which gets automatically compiled 
+    and can be stored/shared.
 License: MIT + file LICENSE
-LazyData: TRUE
 Depends: topGO
 Imports: 
     DESeq2, 
     SummarizedExperiment, 
+    mosdef (>= 1.1.0),
     GenomicRanges, 
     IRanges,
     S4Vectors, 
@@ -24,7 +26,6 @@ Imports:
     heatmaply, 
     plotly,
     pheatmap,
-    pcaExplorer, 
     IHW, 
     gplots, 
     UpSetR, 
@@ -48,8 +49,11 @@ Imports:
     shinyAce, 
     BiocParallel, 
     grDevices, 
+    graphics,
     base64enc,
-    methods
+    methods,
+    utils,
+    stats
 Suggests: 
     testthat, 
     BiocStyle, 
@@ -58,6 +62,7 @@ Suggests:
     org.Hs.eg.db,
     TxDb.Hsapiens.UCSC.hg38.knownGene, 
     DEFormats, 
+    htmltools,
     edgeR
 URL: https://github.com/federicomarini/ideal,
     https://federicomarini.github.io/ideal/
@@ -67,3 +72,4 @@ biocViews: ImmunoOncology, GeneExpression, DifferentialExpression, RNASeq, Seque
 VignetteBuilder: knitr
 RoxygenNote: 7.3.2
 Encoding: UTF-8
+Roxygen: list(markdown = TRUE)

@@ -7,7 +7,7 @@
 deseqresult2tbl(deseqresult)
 }
 \arguments{
-\item{deseqresult}{A \code{\link{DESeqResults}} object}
+\item{deseqresult}{A \code{\link[=DESeqResults]{DESeqResults()}} object}
 }
 \value{
 A "tidy" data.frame with all genes

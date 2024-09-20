@@ -17,7 +17,7 @@ plot_volcano(
 )
 }
 \arguments{
-\item{res_obj}{A \code{\link{DESeqResults}} object}
+\item{res_obj}{A \code{\link[=DESeqResults]{DESeqResults()}} object}
 
 \item{FDR}{Numeric value, the significance level for thresholding adjusted p-values}
 
@@ -53,8 +53,8 @@ column is provided in \code{res_obj}, or else b< using  the identifiers specifie
 in the row names
 }
 \examples{
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),

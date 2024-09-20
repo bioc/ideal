@@ -7,9 +7,9 @@
 wrapup_for_iSEE(dds, res)
 }
 \arguments{
-\item{dds}{A \code{\link{DESeqDataSet}} object.}
+\item{dds}{A \code{\link[=DESeqDataSet]{DESeqDataSet()}} object.}
 
-\item{res}{A \code{\link{DESeqResults}} object.}
+\item{res}{A \code{\link[=DESeqResults]{DESeqResults()}} object.}
 }
 \value{
 A SummarizedExperiment object, with raw counts, normalized counts, and
@@ -38,8 +38,8 @@ se <- wrapup_for_iSEE(dds, res)
 # iSEE(se)
 \dontrun{
 # or with the well known airway package...
-library(airway)
-data(airway)
+library("airway")
+data("airway", package = "airway")
 airway
 dds_airway <- DESeq2::DESeqDataSetFromMatrix(assay(airway),
   colData = colData(airway),
