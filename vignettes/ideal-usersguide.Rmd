@@ -45,7 +45,6 @@ opts_chunk$set(comment = "#>",
                warning = FALSE)
 stopifnot(requireNamespace("htmltools"))
 htmltools::tagList(rmarkdown::html_dependency_font_awesome())
-
 ```
 
 ```{r, out.width="50%", echo=FALSE}
