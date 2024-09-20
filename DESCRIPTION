@@ -62,6 +62,7 @@ Suggests:
     org.Hs.eg.db,
     TxDb.Hsapiens.UCSC.hg38.knownGene, 
     DEFormats, 
+    htmltools,
     edgeR
 URL: https://github.com/federicomarini/ideal,
     https://federicomarini.github.io/ideal/
